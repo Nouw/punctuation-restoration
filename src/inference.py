@@ -29,7 +29,7 @@ token_style = MODELS[args.pretrained_model][3]
 model_save_path = args.weight_path
 
 # Model
-device = torch.device('cuda' if (args.cuda and torch.cuda.is_available()) else 'cpu')
+device = torch.device('cpu')
 if args.use_crf:
     deep_punctuation = DeepPunctuationCRF(args.pretrained_model, freeze_bert=False, lstm_dim=args.lstm_dim)
 else:
@@ -38,7 +38,7 @@ deep_punctuation.to(device)
 
 
 def inference():
-    deep_punctuation.load_state_dict(torch.load(model_save_path))
+    deep_punctuation.load_state_dict(torch.load(model_save_path, map_location=False), strict=False)
     deep_punctuation.eval()
 
     with open(args.in_file, 'r', encoding='utf-8') as f:
